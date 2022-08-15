@@ -20,6 +20,7 @@ CustomTextField(
         child: TextFormField(
           showCursor: dispCursor,
           controller: cont,
+          
           keyboardType: kbtype,
           decoration: InputDecoration(
               fillColor: Colors.white,
@@ -90,7 +91,7 @@ class _CustomDateState extends State<CustomDate> {
                       lastDate: DateTime.now());
                   if (pickedDate != null) {
                     String formattedDate =
-                        DateFormat('dd-MM-yyyy').format(pickedDate);
+                        DateFormat('dd MMM, yyyy').format(pickedDate);
                     setState(() {
                       dateinput.text =
                           formattedDate; //set output date to TextField value.
@@ -179,11 +180,9 @@ class _CustomTimeState extends State<CustomTime> {
                     initialEntryMode: TimePickerEntryMode.dial,
                   );
 
-                  if (timeOfDay != null && timeOfDay != TimeOfDay.now()) {
+                  if (timeOfDay != null) {
                     setState(() {
-                      String formattedTime =
-                          timeOfDay.toString().substring(10, 15);
-
+                      String formattedTime = timeOfDay.format(context);
                       timeInput.text = formattedTime;
                     });
                   } else {
@@ -254,3 +253,4 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
+

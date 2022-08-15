@@ -25,16 +25,19 @@ class _AddScreenState extends State<AddScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Home(
-                      title: title.text,
-                    )),
-          );
-        },
+        
+        onPressed: null,
+        // () {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => Home(
+        //               title: title.text,
+        //             )),
+        //   );
+        // },
         child: Icon(Icons.check),
+        backgroundColor: onPressed != null ? ,
       ),
       backgroundColor: Color.fromARGB(255, 201, 204, 206),
       body: Padding(
