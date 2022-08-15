@@ -5,11 +5,13 @@ class CustomTime extends StatefulWidget {
   var ic;
   var textFieldHint;
   var f;
+  var time;
   CustomTime(
       {Key? key,
       required this.ic,
       required this.f,
-      required this.textFieldHint})
+      required this.textFieldHint,
+      required this.time})
       : super(key: key);
 
   @override
@@ -17,7 +19,6 @@ class CustomTime extends StatefulWidget {
 }
 
 class _CustomTimeState extends State<CustomTime> {
-  TextEditingController timeInput = TextEditingController();
   late TimeOfDay selectedTime;
 
   @override
@@ -42,7 +43,7 @@ class _CustomTimeState extends State<CustomTime> {
           child: SizedBox(
               width: MediaQuery.of(context).size.width * .6,
               child: TextFormField(
-                controller: timeInput,
+                controller: widget.time,
                 readOnly: true,
                 onTap: () async {
                   TimeOfDay? timeOfDay = await showTimePicker(
@@ -54,7 +55,7 @@ class _CustomTimeState extends State<CustomTime> {
                   if (timeOfDay != null) {
                     setState(() {
                       String formattedTime = timeOfDay.format(context);
-                      timeInput.text = formattedTime;
+                      widget.time.text = formattedTime;
                     });
                   } else {
                     return showDialog(

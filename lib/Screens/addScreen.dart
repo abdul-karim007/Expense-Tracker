@@ -23,12 +23,6 @@ class _AddScreenState extends State<AddScreen> {
   TextEditingController date = TextEditingController();
   TextEditingController time = TextEditingController();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   amount.clear();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +80,11 @@ class _AddScreenState extends State<AddScreen> {
               cont: date,
             ),
             CustomTime(
-                ic: Icons.access_time, f: () {}, textFieldHint: textConst.time),
+              ic: Icons.access_time,
+              f: () {},
+              textFieldHint: textConst.time,
+              time: time,
+            ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Container(
