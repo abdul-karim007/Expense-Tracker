@@ -5,6 +5,7 @@ import 'package:expensetracker/Widgets/customDate.dart';
 import 'package:expensetracker/Widgets/customTime.dart';
 import 'package:expensetracker/Widgets/customTextField.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddScreen extends StatefulWidget {
   const AddScreen({Key? key}) : super(key: key);
@@ -13,16 +14,16 @@ class AddScreen extends StatefulWidget {
   State<AddScreen> createState() => _AddScreenState();
 }
 
-class _AddScreenState extends State<AddScreen> {
-  var choice = [textConst.income, textConst.expense];
-  var dropdownvalue = textConst.income;
-  late DateTime _selectedDate;
-  TextEditingController title = TextEditingController();
-  TextEditingController descrip = TextEditingController();
-  TextEditingController amount = TextEditingController();
-  TextEditingController date = TextEditingController();
-  TextEditingController time = TextEditingController();
+var choice = [textConst.income, textConst.expense];
+var dropdownvalue = textConst.income;
+late DateTime _selectedDate;
+TextEditingController title = TextEditingController();
+TextEditingController descrip = TextEditingController();
+TextEditingController amount = TextEditingController();
+TextEditingController date = TextEditingController();
+TextEditingController time = TextEditingController();
 
+class _AddScreenState extends State<AddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +55,7 @@ class _AddScreenState extends State<AddScreen> {
                 dispCursor: true,
                 kbtype: TextInputType.multiline,
                 w: .8,
-                context: context,
+                // context: context,
                 limit: 30,
                 textFieldHint: textConst.title,
                 minL: 1,
@@ -63,7 +64,7 @@ class _AddScreenState extends State<AddScreen> {
             CustomTextField(
                 dispCursor: true,
                 kbtype: TextInputType.multiline,
-                context: context,
+                // context: context,
                 cont: descrip,
                 limit: 100,
                 textFieldHint: textConst.desc,
@@ -71,11 +72,17 @@ class _AddScreenState extends State<AddScreen> {
                 maxL: 5,
                 w: .8),
             CustomDate(
-                ic: Icons.calendar_month,
-                f: () {},
-                textFieldHint: textConst.date, cont: date,),
+              ic: Icons.calendar_month,
+              f: () {},
+              textFieldHint: textConst.date,
+              cont: date,
+            ),
             CustomTime(
-                ic: Icons.access_time, f: () {}, textFieldHint: textConst.time),
+              ic: Icons.access_time,
+              f: () {},
+              textFieldHint: textConst.time,
+              time: time,
+            ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Container(
@@ -116,7 +123,7 @@ class _AddScreenState extends State<AddScreen> {
                 dispCursor: true,
                 kbtype: TextInputType.none,
                 cont: amount,
-                context: context,
+                // context: context,
                 w: .8,
                 limit: null,
                 textFieldHint: textConst.amount,
