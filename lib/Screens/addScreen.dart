@@ -1,6 +1,9 @@
 import 'package:expensetracker/Constants/textConsts.dart';
-import 'package:expensetracker/Functions/customWidgets.dart';
 import 'package:expensetracker/Screens/home.dart';
+import 'package:expensetracker/Widgets/customButton.dart';
+import 'package:expensetracker/Widgets/customDate.dart';
+import 'package:expensetracker/Widgets/customTime.dart';
+import 'package:expensetracker/Widgets/customTextField.dart';
 import 'package:flutter/material.dart';
 
 class AddScreen extends StatefulWidget {
@@ -25,19 +28,21 @@ class _AddScreenState extends State<AddScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
-        
-        onPressed: null,
-        // () {
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => Home(
-        //               title: title.text,
-        //             )),
-        //   );
-        // },
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Home(
+                      title: title.text,
+                      descrip: descrip.text,
+                      date: date.text,
+                      time: time.text,
+                      dropdownValue: dropdownvalue,
+                      amount: amount.text,
+                    )),
+          );
+        },
         child: Icon(Icons.check),
-        backgroundColor: onPressed != null ? ,
       ),
       backgroundColor: Color.fromARGB(255, 201, 204, 206),
       body: Padding(
@@ -68,7 +73,7 @@ class _AddScreenState extends State<AddScreen> {
             CustomDate(
                 ic: Icons.calendar_month,
                 f: () {},
-                textFieldHint: textConst.date),
+                textFieldHint: textConst.date, cont: date,),
             CustomTime(
                 ic: Icons.access_time, f: () {}, textFieldHint: textConst.time),
             Padding(
