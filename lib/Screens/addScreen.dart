@@ -23,6 +23,12 @@ class _AddScreenState extends State<AddScreen> {
   TextEditingController date = TextEditingController();
   TextEditingController time = TextEditingController();
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   amount.clear();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +38,15 @@ class _AddScreenState extends State<AddScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Home(
-                      title: title.text,
-                      descrip: descrip.text,
-                      date: date.text,
-                      time: time.text,
-                      dropdownValue: dropdownvalue,
-                      amount: amount.text,
-                    )),
+              builder: (context) => Home(
+                title: title.text,
+                descrip: descrip.text,
+                date: date.text,
+                time: time.text,
+                dropdownValue: dropdownvalue,
+                amount: amount.text,
+              ),
+            ),
           );
         },
         child: Icon(Icons.check),
@@ -51,29 +58,33 @@ class _AddScreenState extends State<AddScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CustomTextField(
-                dispCursor: true,
-                kbtype: TextInputType.multiline,
-                w: .8,
-                context: context,
-                limit: 30,
-                textFieldHint: textConst.title,
-                minL: 1,
-                maxL: 1,
-                cont: title),
+              dispCursor: true,
+              kbtype: TextInputType.multiline,
+              w: .8,
+              context: context,
+              limit: 30,
+              textFieldHint: textConst.title,
+              minL: 1,
+              maxL: 1,
+              cont: title,
+            ),
             CustomTextField(
-                dispCursor: true,
-                kbtype: TextInputType.multiline,
-                context: context,
-                cont: descrip,
-                limit: 100,
-                textFieldHint: textConst.desc,
-                minL: 5,
-                maxL: 5,
-                w: .8),
+              dispCursor: true,
+              kbtype: TextInputType.multiline,
+              context: context,
+              cont: descrip,
+              limit: 100,
+              textFieldHint: textConst.desc,
+              minL: 5,
+              maxL: 5,
+              w: .8,
+            ),
             CustomDate(
-                ic: Icons.calendar_month,
-                f: () {},
-                textFieldHint: textConst.date, cont: date,),
+              ic: Icons.calendar_month,
+              f: () {},
+              textFieldHint: textConst.date,
+              cont: date,
+            ),
             CustomTime(
                 ic: Icons.access_time, f: () {}, textFieldHint: textConst.time),
             Padding(
@@ -113,88 +124,95 @@ class _AddScreenState extends State<AddScreen> {
               ),
             ),
             CustomTextField(
-                dispCursor: true,
-                kbtype: TextInputType.none,
-                cont: amount,
-                context: context,
-                w: .8,
-                limit: null,
-                textFieldHint: textConst.amount,
-                minL: 1,
-                maxL: 1),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomButton(
-                  number: 1,
-                  controller: amount,
-                ),
-                CustomButton(
-                  number: 2,
-                  controller: amount,
-                ),
-                CustomButton(
-                  number: 3,
-                  controller: amount,
-                )
-              ],
+              dispCursor: true,
+              kbtype: TextInputType.none,
+              cont: amount,
+              context: context,
+              w: .8,
+              limit: null,
+              textFieldHint: textConst.amount,
+              minL: 1,
+              maxL: 1,
             ),
+            // TextFormField(
+            //   onChanged: (d) {
+            //     amount.selection = TextSelection.fromPosition(
+            //       TextPosition(
+            //         offset: amount.text.length - d.length,
+            //         affinity: TextAffinity.downstream,
+            //       ),
+            //     );
+            //     amount.text += d.toString();
+            //   },
+            //   controller: amount,
+            //   enableInteractiveSelection: true,
+            //   keyboardType: TextInputType.number,
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomButton(number: 4, controller: amount),
-                CustomButton(number: 5, controller: amount),
-                CustomButton(
-                  number: 6,
-                  controller: amount,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomButton(
-                  number: 7,
-                  controller: amount,
-                ),
-                CustomButton(
-                  number: 8,
-                  controller: amount,
-                ),
-                CustomButton(
-                  number: 9,
-                  controller: amount,
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomButton(
-                  number: 0,
-                  controller: amount,
-                ),
-                ElevatedButton(
+                for (int i = 1; i <= 3; i++)
+                  CustomButton(
+                    number: i,
                     onPressed: () {
-                      amount.text =
-                          amount.text.substring(0, amount.text.length - 1);
+                      // amount.selection = TextSelection.fromPosition(
+                      //     TextPosition(offset: amount.text.length));
+                      amount.text += i.toString();
                     },
-                    child: Text(textConst.delete),
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(10),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 4; i <= 6; i++)
+                  CustomButton(
+                    number: i,
+                    onPressed: () {
+                      amount.text += i.toString();
+                    },
+                  ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 7; i <= 9; i++)
+                  CustomButton(
+                    number: i,
+                    onPressed: () {
+                      amount.text += i.toString();
+                    },
+                  ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomButton(
+                    number: 0,
+                    onPressed: () {
+                      amount.text += 0.toString();
+                    }),
+                ElevatedButton(
+                  onPressed: () {
+                    amount.text =
+                        amount.text.substring(0, amount.text.length - 1);
+                  },
+                  child: Text(textConst.delete),
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(10),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      // fixedSize: MaterialStateProperty.all(
-                      //   Size.square(60),
-                      // ),
-                      minimumSize: MaterialStateProperty.all(
-                        Size(120, 40),
-                      ),
-                      backgroundColor: MaterialStateProperty.all(Colors.red),
-                    ))
+                    ),
+                    minimumSize: MaterialStateProperty.all(
+                      Size(120, 40),
+                    ),
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                  ),
+                )
               ],
             )
           ],

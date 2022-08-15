@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
+class CustomButton extends StatefulWidget {
   final int number;
-  final TextEditingController controller;
+  final Function()? onPressed;
 
-  const CustomButton({
+  CustomButton({
     Key? key,
     required this.number,
-    required this.controller,
+    required this.onPressed,
   }) : super(key: key);
 
+  @override
+  State<CustomButton> createState() => _CustomButtonState();
+}
+
+class _CustomButtonState extends State<CustomButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0, right: 3),
       child: ElevatedButton(
-        onPressed: () {
-          controller.text += number.toString();
-        },
+        onPressed: widget.onPressed,
         child: Text(
-          number.toString(),
+          widget.number.toString(),
           style: TextStyle(color: Colors.blueGrey),
         ),
         style: ButtonStyle(
