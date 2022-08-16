@@ -134,17 +134,20 @@ class _AddScreenState extends State<AddScreen> {
             ),
             // TextFormField(
             //   onChanged: (d) {
+            //     print("akjhsddh");
             //     amount.selection = TextSelection.fromPosition(
             //       TextPosition(
             //         offset: amount.text.length - d.length,
             //         affinity: TextAffinity.downstream,
             //       ),
             //     );
+
+            //     print("akjhsddh  ${amount.selection}");
             //     amount.text += d.toString();
             //   },
             //   controller: amount,
-            //   enableInteractiveSelection: true,
-            //   keyboardType: TextInputType.number,
+            //   // enableInteractiveSelection: true,
+            //   keyboardType: TextInputType.none,
             // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -153,9 +156,21 @@ class _AddScreenState extends State<AddScreen> {
                   CustomButton(
                     number: i,
                     onPressed: () {
-                      // amount.selection = TextSelection.fromPosition(
-                      //     TextPosition(offset: amount.text.length));
-                      amount.text += i.toString();
+                      var cursorPos = amount.selection.base.offset;
+                      if (cursorPos > 0) {
+                        String suffixText = amount.text.substring(cursorPos);
+
+                        String prefixText = amount.text.substring(0, cursorPos);
+
+                        amount.text = prefixText + i.toString() + suffixText;
+
+                        amount.selection = TextSelection(
+                          baseOffset: cursorPos + 1,
+                          extentOffset: cursorPos + 1,
+                        );
+                      } else {
+                        amount.text += i.toString();
+                      }
                     },
                   ),
               ],
@@ -167,7 +182,21 @@ class _AddScreenState extends State<AddScreen> {
                   CustomButton(
                     number: i,
                     onPressed: () {
-                      amount.text += i.toString();
+                      var cursorPos = amount.selection.base.offset;
+                      if (cursorPos > 0) {
+                        String suffixText = amount.text.substring(cursorPos);
+
+                        String prefixText = amount.text.substring(0, cursorPos);
+
+                        amount.text = prefixText + i.toString() + suffixText;
+
+                        amount.selection = TextSelection(
+                          baseOffset: cursorPos + 1,
+                          extentOffset: cursorPos + 1,
+                        );
+                      } else {
+                        amount.text += i.toString();
+                      }
                     },
                   ),
               ],
@@ -179,7 +208,21 @@ class _AddScreenState extends State<AddScreen> {
                   CustomButton(
                     number: i,
                     onPressed: () {
-                      amount.text += i.toString();
+                      var cursorPos = amount.selection.base.offset;
+                      if (cursorPos > 0) {
+                        String suffixText = amount.text.substring(cursorPos);
+
+                        String prefixText = amount.text.substring(0, cursorPos);
+
+                        amount.text = prefixText + i.toString() + suffixText;
+
+                        amount.selection = TextSelection(
+                          baseOffset: cursorPos + 1,
+                          extentOffset: cursorPos + 1,
+                        );
+                      } else {
+                        amount.text += i.toString();
+                      }
                     },
                   ),
               ],
@@ -190,7 +233,21 @@ class _AddScreenState extends State<AddScreen> {
                 CustomButton(
                     number: 0,
                     onPressed: () {
-                      amount.text += 0.toString();
+                      var cursorPos = amount.selection.base.offset;
+                      if (cursorPos > 0) {
+                        String suffixText = amount.text.substring(cursorPos);
+
+                        String prefixText = amount.text.substring(0, cursorPos);
+
+                        amount.text = prefixText + 0.toString() + suffixText;
+
+                        amount.selection = TextSelection(
+                          baseOffset: cursorPos + 1,
+                          extentOffset: cursorPos + 1,
+                        );
+                      } else {
+                        amount.text += 0.toString();
+                      }
                     }),
                 ElevatedButton(
                   onPressed: () {
