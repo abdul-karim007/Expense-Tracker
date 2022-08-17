@@ -28,14 +28,7 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> data = {
-      'title': title.text,
-      'descrip': descrip.text,
-      'date': date.text,
-      'time': time.text,
-      'dropdown': dropdownvalue,
-      'amount': amount.value
-    };
+
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -46,8 +39,6 @@ class _AddScreenState extends State<AddScreen> {
               date.text != '' &&
               time.text != '' &&
               amount.text != '') {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            prefs.setString('data', jsonEncode(data));
             Navigator.push(
               context,
               MaterialPageRoute(
