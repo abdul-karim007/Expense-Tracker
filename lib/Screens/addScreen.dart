@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:expensetracker/Constants/textConsts.dart';
 import 'package:expensetracker/Screens/home.dart';
 import 'package:expensetracker/Widgets/customButton.dart';
@@ -14,34 +16,72 @@ class AddScreen extends StatefulWidget {
   State<AddScreen> createState() => _AddScreenState();
 }
 
-var choice = [textConst.income, textConst.expense];
-var dropdownvalue = textConst.income;
-late DateTime _selectedDate;
-TextEditingController title = TextEditingController();
-TextEditingController descrip = TextEditingController();
-TextEditingController amount = TextEditingController();
-TextEditingController date = TextEditingController();
-TextEditingController time = TextEditingController();
-
 class _AddScreenState extends State<AddScreen> {
+  var choice = [textConst.income, textConst.expense];
+  var dropdownvalue = textConst.income;
+  late DateTime _selectedDate;
+  TextEditingController title = TextEditingController();
+  TextEditingController descrip = TextEditingController();
+  TextEditingController amount = TextEditingController();
+  TextEditingController date = TextEditingController();
+  TextEditingController time = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> data = {
+      'title': title.text,
+      'descrip': descrip.text,
+      'date': date.text,
+      'time': time.text,
+      'dropdown': dropdownvalue,
+      'amount': amount.value
+    };
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
+        onPressed: () async {
+          if (title.text != '' &&
+              descrip.text != '' &&
+              date.text != '' &&
+              time.text != '' &&
+              amount.text != '') {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setString('data', jsonEncode(data));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
                 builder: (context) => Home(
-                      title: title.text,
-                      descrip: descrip.text,
-                      date: date.text,
-                      time: time.text,
-                      dropdownValue: dropdownvalue,
-                      amount: amount.text,
-                    )),
-          );
+                  title: title.text,
+                  descrip: descrip.text,
+                  date: date.text,
+                  time: time.text,
+                  dropdownValue: dropdownvalue,
+                  amount: amount.text,
+                ),
+              ),
+            );
+          } else {
+            return showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Alert'),
+                    content: Text('Data Missing'),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Ok',
+                            style: TextStyle(color: Colors.blueGrey),
+                          ))
+                    ],
+                  );
+                });
+            ;
+          }
         },
         child: Icon(Icons.check),
       ),
@@ -52,25 +92,25 @@ class _AddScreenState extends State<AddScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CustomTextField(
-                dispCursor: true,
-                kbtype: TextInputType.multiline,
-                w: .8,
-                // context: context,
-                limit: 30,
-                textFieldHint: textConst.title,
-                minL: 1,
-                maxL: 1,
-                cont: title),
+              dispCursor: true,
+              kbtype: TextInputType.multiline,
+              w: .8,
+              limit: 30,
+              textFieldHint: textConst.title,
+              minL: 1,
+              maxL: 1,
+              cont: title,
+            ),
             CustomTextField(
-                dispCursor: true,
-                kbtype: TextInputType.multiline,
-                // context: context,
-                cont: descrip,
-                limit: 100,
-                textFieldHint: textConst.desc,
-                minL: 5,
-                maxL: 5,
-                w: .8),
+              dispCursor: true,
+              kbtype: TextInputType.multiline,
+              cont: descrip,
+              limit: 100,
+              textFieldHint: textConst.desc,
+              minL: 5,
+              maxL: 5,
+              w: .8,
+            ),
             CustomDate(
               ic: Icons.calendar_month,
               f: () {},
@@ -120,88 +160,134 @@ class _AddScreenState extends State<AddScreen> {
               ),
             ),
             CustomTextField(
-                dispCursor: true,
-                kbtype: TextInputType.none,
-                cont: amount,
-                // context: context,
-                w: .8,
-                limit: null,
-                textFieldHint: textConst.amount,
-                minL: 1,
-                maxL: 1),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomButton(
-                  number: 1,
-                  controller: amount,
-                ),
-                CustomButton(
-                  number: 2,
-                  controller: amount,
-                ),
-                CustomButton(
-                  number: 3,
-                  controller: amount,
-                )
-              ],
+              dispCursor: true,
+              kbtype: TextInputType.none,
+              cont: amount,
+              w: .8,
+              limit: null,
+              textFieldHint: textConst.amount,
+              minL: 1,
+              maxL: 1,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomButton(number: 4, controller: amount),
-                CustomButton(number: 5, controller: amount),
-                CustomButton(
-                  number: 6,
-                  controller: amount,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomButton(
-                  number: 7,
-                  controller: amount,
-                ),
-                CustomButton(
-                  number: 8,
-                  controller: amount,
-                ),
-                CustomButton(
-                  number: 9,
-                  controller: amount,
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomButton(
-                  number: 0,
-                  controller: amount,
-                ),
-                ElevatedButton(
+                for (int i = 1; i <= 3; i++)
+                  CustomButton(
+                    number: i,
                     onPressed: () {
-                      amount.text =
-                          amount.text.substring(0, amount.text.length - 1);
+                      var cursorPos = amount.selection.base.offset;
+                      if (cursorPos > 0) {
+                        String suffixText = amount.text.substring(cursorPos);
+
+                        String prefixText = amount.text.substring(0, cursorPos);
+
+                        amount.text = prefixText + i.toString() + suffixText;
+
+                        amount.selection = TextSelection(
+                          baseOffset: cursorPos + 1,
+                          extentOffset: cursorPos + 1,
+                        );
+                      } else {
+                        amount.text += i.toString();
+                      }
                     },
-                    child: Text(textConst.delete),
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(10),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 4; i <= 6; i++)
+                  CustomButton(
+                    number: i,
+                    onPressed: () {
+                      var cursorPos = amount.selection.base.offset;
+                      if (cursorPos > 0) {
+                        String suffixText = amount.text.substring(cursorPos);
+
+                        String prefixText = amount.text.substring(0, cursorPos);
+
+                        amount.text = prefixText + i.toString() + suffixText;
+
+                        amount.selection = TextSelection(
+                          baseOffset: cursorPos + 1,
+                          extentOffset: cursorPos + 1,
+                        );
+                      } else {
+                        amount.text += i.toString();
+                      }
+                    },
+                  ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 7; i <= 9; i++)
+                  CustomButton(
+                    number: i,
+                    onPressed: () {
+                      var cursorPos = amount.selection.base.offset;
+                      if (cursorPos > 0) {
+                        String suffixText = amount.text.substring(cursorPos);
+
+                        String prefixText = amount.text.substring(0, cursorPos);
+
+                        amount.text = prefixText + i.toString() + suffixText;
+
+                        amount.selection = TextSelection(
+                          baseOffset: cursorPos + 1,
+                          extentOffset: cursorPos + 1,
+                        );
+                      } else {
+                        amount.text += i.toString();
+                      }
+                    },
+                  ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomButton(
+                    number: 0,
+                    onPressed: () {
+                      var cursorPos = amount.selection.base.offset;
+                      if (cursorPos > 0) {
+                        String suffixText = amount.text.substring(cursorPos);
+
+                        String prefixText = amount.text.substring(0, cursorPos);
+
+                        amount.text = prefixText + 0.toString() + suffixText;
+
+                        amount.selection = TextSelection(
+                          baseOffset: cursorPos + 1,
+                          extentOffset: cursorPos + 1,
+                        );
+                      } else {
+                        amount.text += 0.toString();
+                      }
+                    }),
+                ElevatedButton(
+                  onPressed: () {
+                    amount.text =
+                        amount.text.substring(0, amount.text.length - 1);
+                  },
+                  child: Text(textConst.delete),
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(10),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      // fixedSize: MaterialStateProperty.all(
-                      //   Size.square(60),
-                      // ),
-                      minimumSize: MaterialStateProperty.all(
-                        Size(120, 40),
-                      ),
-                      backgroundColor: MaterialStateProperty.all(Colors.red),
-                    ))
+                    ),
+                    minimumSize: MaterialStateProperty.all(
+                      Size(120, 40),
+                    ),
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                  ),
+                )
               ],
             )
           ],

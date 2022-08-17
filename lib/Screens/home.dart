@@ -1,28 +1,46 @@
+import 'dart:convert';
 import 'package:expensetracker/Screens/addScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   var title;
   var descrip;
   var date;
   var time;
   var dropdownValue;
   var amount;
-  List data = [];
-  Home(
-      {Key? key,
-      required this.title,
-      required this.descrip,
-      required this.date,
-      required this.time,
-      required this.dropdownValue,
-      required this.amount})
-      : super(key: key);
+
+  Home({
+    Key? key,
+    required this.title,
+    required this.descrip,
+    required this.date,
+    required this.time,
+    required this.dropdownValue,
+    required this.amount,
+  }) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  var prefs;
+  sharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  @override
+  void initState() {
+    sharedPrefs();
+  }
 
   @override
   Widget build(BuildContext context) {
+    String getdata = prefs.getString('data');
+    Map<String, dynamic> dataMap = jsonDecode(getdata) as Map<String, dynamic>;
+
     return Scaffold(
         floatingActionButton: FloatingActionButton(onPressed: () {
           Navigator.push(
@@ -31,7 +49,6 @@ class Home extends StatelessWidget {
           );
         }),
         body: ListView.builder(
-            itemCount: data.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 10, top: 6),
@@ -54,7 +71,7 @@ class Home extends StatelessWidget {
                                     backgroundColor:
                                         Color.fromARGB(255, 228, 228, 228),
                                     radius: 28,
-                                    child: dropdownValue == 'Income'
+                                    child: widget.dropdownValue == 'Income'
                                         ? Icon(
                                             Icons.arrow_forward,
                                             color: Color(0xFF02DD09),
@@ -75,21 +92,21 @@ class Home extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          title,
+                                          dataMap['title'],
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 20,
                                               color: Colors.black87),
                                         ),
                                         Text(
-                                          descrip,
+                                          widget.descrip,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w300,
                                               fontSize: 15,
                                               color: Colors.black54),
                                         ),
                                         Text(
-                                          '$date at $time',
+                                          '${widget.date} at ${widget.time}',
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 12,
@@ -101,7 +118,7 @@ class Home extends StatelessWidget {
                                 ],
                               ),
                               Row(
-                                children: [Text(amount)],
+                                children: [Text(widget.amount)],
                               )
                             ])),
                   ),
