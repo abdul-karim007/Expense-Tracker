@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:expensetracker/Constants/textConsts.dart';
 import 'package:expensetracker/Screens/home.dart';
 import 'package:expensetracker/Widgets/customButton.dart';
@@ -7,7 +5,7 @@ import 'package:expensetracker/Widgets/customDate.dart';
 import 'package:expensetracker/Widgets/customTime.dart';
 import 'package:expensetracker/Widgets/customTextField.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddScreen extends StatefulWidget {
   const AddScreen({Key? key}) : super(key: key);
@@ -17,6 +15,26 @@ class AddScreen extends StatefulWidget {
 }
 
 class _AddScreenState extends State<AddScreen> {
+  CollectionReference expense =
+      FirebaseFirestore.instance.collection('expense_tracker');
+
+  Future<void> addEntry() {
+    // Calling the collection to add a new user
+    return expense
+        //adding to firebase collection
+        .add({
+          //Data added in the form of a dictionary into the document.
+          'title': title.text,
+          'descrip': descrip.text,
+          'date': date.text,
+          'time': time.text,
+          'dropdown': dropdownvalue,
+          'amount': amount.text
+        })
+        .then((value) => print("Done"))
+        .catchError((error) => print("couldn't be added."));
+  }
+
   var choice = [textConst.income, textConst.expense];
   var dropdownvalue = textConst.income;
   late DateTime _selectedDate;
@@ -28,8 +46,6 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
@@ -39,17 +55,11 @@ class _AddScreenState extends State<AddScreen> {
               date.text != '' &&
               time.text != '' &&
               amount.text != '') {
+            addEntry();
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Home(
-                  title: title.text,
-                  descrip: descrip.text,
-                  date: date.text,
-                  time: time.text,
-                  dropdownValue: dropdownvalue,
-                  amount: amount.text,
-                ),
+                builder: (context) => Home(),
               ),
             );
           } else {
@@ -58,7 +68,7 @@ class _AddScreenState extends State<AddScreen> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text('Alert'),
-                    content: Text('Data Missing'),
+                    content: Text(textConst.alert),
                     actions: [
                       TextButton(
                           onPressed: () {
@@ -71,7 +81,6 @@ class _AddScreenState extends State<AddScreen> {
                     ],
                   );
                 });
-            ;
           }
         },
         child: Icon(Icons.check),
