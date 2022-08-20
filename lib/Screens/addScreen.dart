@@ -4,6 +4,7 @@ import 'package:expensetracker/Widgets/customButton.dart';
 import 'package:expensetracker/Widgets/customDate.dart';
 import 'package:expensetracker/Widgets/customTime.dart';
 import 'package:expensetracker/Widgets/customTextField.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -29,7 +30,8 @@ class _AddScreenState extends State<AddScreen> {
           'date': date.text,
           'time': time.text,
           'dropdown': dropdownvalue,
-          'amount': amount.text
+          'amount': amount.text,
+          'uid': FirebaseAuth.instance.currentUser?.uid
         })
         .then((value) => print("Done"))
         .catchError((error) => print("couldn't be added."));
@@ -46,247 +48,253 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          if (title.text != '' &&
-              descrip.text != '' &&
-              date.text != '' &&
-              time.text != '' &&
-              amount.text != '') {
-            addEntry();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Home(),
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            if (title.text != '' &&
+                descrip.text != '' &&
+                date.text != '' &&
+                time.text != '' &&
+                amount.text != '') {
+              addEntry();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Home(),
+                ),
+              );
+            } else {
+              return showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Alert'),
+                      content: Text(textConst.alert),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Ok',
+                              style: TextStyle(color: Colors.blueGrey),
+                            ))
+                      ],
+                    );
+                  });
+            }
+          },
+          child: Icon(Icons.check),
+        ),
+        backgroundColor: Color.fromARGB(255, 201, 204, 206),
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CustomTextField(
+                dispCursor: true,
+                kbtype: TextInputType.multiline,
+                w: .8,
+                limit: 30,
+                textFieldHint: textConst.title,
+                minL: 1,
+                maxL: 1,
+                cont: title,
               ),
-            );
-          } else {
-            return showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Alert'),
-                    content: Text(textConst.alert),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            'Ok',
-                            style: TextStyle(color: Colors.blueGrey),
-                          ))
-                    ],
-                  );
-                });
-          }
-        },
-        child: Icon(Icons.check),
-      ),
-      backgroundColor: Color.fromARGB(255, 201, 204, 206),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(40, 40, 40, 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CustomTextField(
-              dispCursor: true,
-              kbtype: TextInputType.multiline,
-              w: .8,
-              limit: 30,
-              textFieldHint: textConst.title,
-              minL: 1,
-              maxL: 1,
-              cont: title,
-            ),
-            CustomTextField(
-              dispCursor: true,
-              kbtype: TextInputType.multiline,
-              cont: descrip,
-              limit: 100,
-              textFieldHint: textConst.desc,
-              minL: 5,
-              maxL: 5,
-              w: .8,
-            ),
-            CustomDate(
-              textFieldHint: textConst.date,
-              cont: date,
-            ),
-            CustomTime(
-              textFieldHint: textConst.time,
-              time: time,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                height: MediaQuery.of(context).size.height * .07,
-                width: MediaQuery.of(context).size.width * .8,
-                child: DropdownButtonHideUnderline(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DropdownButton(
-                      value: dropdownvalue,
-                      icon: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Colors.blueGrey,
+              CustomTextField(
+                dispCursor: true,
+                kbtype: TextInputType.multiline,
+                cont: descrip,
+                limit: 100,
+                textFieldHint: textConst.desc,
+                minL: 4,
+                maxL: 4,
+                w: .8,
+              ),
+              CustomDate(
+                textFieldHint: textConst.date,
+                cont: date,
+              ),
+              CustomTime(
+                textFieldHint: textConst.time,
+                time: time,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  height: MediaQuery.of(context).size.height * .07,
+                  width: MediaQuery.of(context).size.width * .8,
+                  child: DropdownButtonHideUnderline(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropdownButton(
+                        value: dropdownvalue,
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.blueGrey,
+                        ),
+                        items: choice.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(
+                              items,
+                              style: TextStyle(color: Colors.blueGrey),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownvalue = newValue!;
+                          });
+                        },
                       ),
-                      items: choice.map((String items) {
-                        return DropdownMenuItem(
-                          value: items,
-                          child: Text(
-                            items,
-                            style: TextStyle(color: Colors.blueGrey),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownvalue = newValue!;
-                        });
-                      },
                     ),
                   ),
                 ),
               ),
-            ),
-            CustomTextField(
-              dispCursor: true,
-              kbtype: TextInputType.none,
-              cont: amount,
-              w: .8,
-              limit: null,
-              textFieldHint: textConst.amount,
-              minL: 1,
-              maxL: 1,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 1; i <= 3; i++)
+              CustomTextField(
+                dispCursor: true,
+                kbtype: TextInputType.none,
+                cont: amount,
+                w: .8,
+                limit: null,
+                textFieldHint: textConst.amount,
+                minL: 1,
+                maxL: 1,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 1; i <= 3; i++)
+                    CustomButton(
+                      number: i,
+                      onPressed: () {
+                        var cursorPos = amount.selection.base.offset;
+                        if (cursorPos > 0) {
+                          String suffixText = amount.text.substring(cursorPos);
+
+                          String prefixText =
+                              amount.text.substring(0, cursorPos);
+
+                          amount.text = prefixText + i.toString() + suffixText;
+
+                          amount.selection = TextSelection(
+                            baseOffset: cursorPos + 1,
+                            extentOffset: cursorPos + 1,
+                          );
+                        } else {
+                          amount.text += i.toString();
+                        }
+                      },
+                    ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 4; i <= 6; i++)
+                    CustomButton(
+                      number: i,
+                      onPressed: () {
+                        var cursorPos = amount.selection.base.offset;
+                        if (cursorPos > 0) {
+                          String suffixText = amount.text.substring(cursorPos);
+
+                          String prefixText =
+                              amount.text.substring(0, cursorPos);
+
+                          amount.text = prefixText + i.toString() + suffixText;
+
+                          amount.selection = TextSelection(
+                            baseOffset: cursorPos + 1,
+                            extentOffset: cursorPos + 1,
+                          );
+                        } else {
+                          amount.text += i.toString();
+                        }
+                      },
+                    ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 7; i <= 9; i++)
+                    CustomButton(
+                      number: i,
+                      onPressed: () {
+                        var cursorPos = amount.selection.base.offset;
+                        if (cursorPos > 0) {
+                          String suffixText = amount.text.substring(cursorPos);
+
+                          String prefixText =
+                              amount.text.substring(0, cursorPos);
+
+                          amount.text = prefixText + i.toString() + suffixText;
+
+                          amount.selection = TextSelection(
+                            baseOffset: cursorPos + 1,
+                            extentOffset: cursorPos + 1,
+                          );
+                        } else {
+                          amount.text += i.toString();
+                        }
+                      },
+                    ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   CustomButton(
-                    number: i,
+                      number: 0,
+                      onPressed: () {
+                        var cursorPos = amount.selection.base.offset;
+                        if (cursorPos > 0) {
+                          String suffixText = amount.text.substring(cursorPos);
+
+                          String prefixText =
+                              amount.text.substring(0, cursorPos);
+
+                          amount.text = prefixText + 0.toString() + suffixText;
+
+                          amount.selection = TextSelection(
+                            baseOffset: cursorPos + 1,
+                            extentOffset: cursorPos + 1,
+                          );
+                        } else {
+                          amount.text += 0.toString();
+                        }
+                      }),
+                  ElevatedButton(
                     onPressed: () {
-                      var cursorPos = amount.selection.base.offset;
-                      if (cursorPos > 0) {
-                        String suffixText = amount.text.substring(cursorPos);
-
-                        String prefixText = amount.text.substring(0, cursorPos);
-
-                        amount.text = prefixText + i.toString() + suffixText;
-
-                        amount.selection = TextSelection(
-                          baseOffset: cursorPos + 1,
-                          extentOffset: cursorPos + 1,
-                        );
-                      } else {
-                        amount.text += i.toString();
-                      }
+                      amount.text =
+                          amount.text.substring(0, amount.text.length - 1);
                     },
-                  ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 4; i <= 6; i++)
-                  CustomButton(
-                    number: i,
-                    onPressed: () {
-                      var cursorPos = amount.selection.base.offset;
-                      if (cursorPos > 0) {
-                        String suffixText = amount.text.substring(cursorPos);
-
-                        String prefixText = amount.text.substring(0, cursorPos);
-
-                        amount.text = prefixText + i.toString() + suffixText;
-
-                        amount.selection = TextSelection(
-                          baseOffset: cursorPos + 1,
-                          extentOffset: cursorPos + 1,
-                        );
-                      } else {
-                        amount.text += i.toString();
-                      }
-                    },
-                  ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 7; i <= 9; i++)
-                  CustomButton(
-                    number: i,
-                    onPressed: () {
-                      var cursorPos = amount.selection.base.offset;
-                      if (cursorPos > 0) {
-                        String suffixText = amount.text.substring(cursorPos);
-
-                        String prefixText = amount.text.substring(0, cursorPos);
-
-                        amount.text = prefixText + i.toString() + suffixText;
-
-                        amount.selection = TextSelection(
-                          baseOffset: cursorPos + 1,
-                          extentOffset: cursorPos + 1,
-                        );
-                      } else {
-                        amount.text += i.toString();
-                      }
-                    },
-                  ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomButton(
-                    number: 0,
-                    onPressed: () {
-                      var cursorPos = amount.selection.base.offset;
-                      if (cursorPos > 0) {
-                        String suffixText = amount.text.substring(cursorPos);
-
-                        String prefixText = amount.text.substring(0, cursorPos);
-
-                        amount.text = prefixText + 0.toString() + suffixText;
-
-                        amount.selection = TextSelection(
-                          baseOffset: cursorPos + 1,
-                          extentOffset: cursorPos + 1,
-                        );
-                      } else {
-                        amount.text += 0.toString();
-                      }
-                    }),
-                ElevatedButton(
-                  onPressed: () {
-                    amount.text =
-                        amount.text.substring(0, amount.text.length - 1);
-                  },
-                  child: Text(textConst.delete),
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(10),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                    child: Text(textConst.delete),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(10),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
+                      minimumSize: MaterialStateProperty.all(
+                        Size(130, 40),
+                      ),
+                      backgroundColor: MaterialStateProperty.all(Colors.red),
                     ),
-                    minimumSize: MaterialStateProperty.all(
-                      Size(130, 40),
-                    ),
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
-                  ),
-                )
-              ],
-            )
-          ],
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

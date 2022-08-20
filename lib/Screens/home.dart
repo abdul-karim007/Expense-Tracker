@@ -1,4 +1,5 @@
 import 'package:expensetracker/Class/expenseClass.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expensetracker/Screens/addScreen.dart';
@@ -58,6 +59,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Query<Map<String, dynamic>> expense = FirebaseFirestore.instance
         .collection('expense_tracker')
+        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
         .orderBy('time', descending: true)
         .orderBy('date', descending: true);
     void getExpfromSanapshot(snapshot) {
