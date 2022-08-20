@@ -123,7 +123,7 @@ class _HomeState extends State<Home> {
                         padding: const EdgeInsets.only(
                             left: 10.0, right: 10, top: 6),
                         child: SizedBox(
-                          height: MediaQuery.of(context).size.height * .12,
+                          height: MediaQuery.of(context).size.height * .2,
                           width: MediaQuery.of(context).size.width,
                           child: Card(
                             shape: RoundedRectangleBorder(
@@ -163,28 +163,40 @@ class _HomeState extends State<Home> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  abc['title'],
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 20,
-                                                      color: Colors.black87),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .5,
+                                                  child: Text(
+                                                    abc['title'],
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 18,
+                                                        color: Colors.black87),
+                                                  ),
                                                 ),
-                                                Text(
-                                                  abc['descrip'],
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontSize: 15,
-                                                      color: Colors.black54),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .5,
+                                                  child: Text(
+                                                    abc['descrip'],
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize: 15,
+                                                        color: Colors.black54),
+                                                  ),
                                                 ),
                                                 Text(
                                                   '${abc['date']} at ${abc['time']}',
                                                   style: TextStyle(
                                                       fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 12,
+                                                          FontWeight.w200,
+                                                      fontSize: 11,
                                                       color: Colors.black45),
                                                 )
                                               ],
