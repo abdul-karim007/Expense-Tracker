@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatefulWidget {
@@ -19,7 +18,7 @@ class _CustomButtonState extends State<CustomButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 5.0, right: 3),
+      padding: const EdgeInsets.only(bottom: 5.0, right: 5),
       child: ElevatedButton(
         onPressed: widget.onPressed,
         child: Text(

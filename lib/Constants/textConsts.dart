@@ -9,5 +9,6 @@ class textConst {
   static String amount = 'Amount';
   static String delete = 'Delete';
   static String noDate = 'No Date Selected';
+  static String noTime = 'No Time Selected';
   static String alert = 'Please make sure to fill all fields to proceed.';
 }

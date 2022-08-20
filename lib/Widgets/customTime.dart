@@ -2,16 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:expensetracker/Constants/textConsts.dart';
 
 class CustomTime extends StatefulWidget {
-  var ic;
   var textFieldHint;
-  var f;
   var time;
-  CustomTime(
-      {Key? key,
-      required this.ic,
-      required this.f,
-      required this.textFieldHint,
-      required this.time})
+  CustomTime({Key? key, required this.textFieldHint, required this.time})
       : super(key: key);
 
   @override
@@ -30,47 +23,22 @@ class _CustomTimeState extends State<CustomTime> {
         Container(
             decoration: BoxDecoration(
                 color: Colors.white, borderRadius: BorderRadius.circular(10)),
-            height: MediaQuery.of(context).size.height * .07,
+            height: MediaQuery.of(context).size.height * .075,
             child: IconButton(
-                onPressed: widget.f,
+                onPressed: pickTime,
                 icon: Icon(
-                  widget.ic,
+                  Icons.access_time,
                   size: 20,
                   color: Colors.blueGrey,
                 ))),
         Padding(
           padding: const EdgeInsets.only(bottom: 10.0),
           child: SizedBox(
-              width: MediaQuery.of(context).size.width * .6,
+              width: MediaQuery.of(context).size.width * .65,
               child: TextFormField(
                 controller: widget.time,
                 readOnly: true,
-                onTap: () async {
-                  TimeOfDay? timeOfDay = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.now(),
-                    initialEntryMode: TimePickerEntryMode.dial,
-                  );
-
-                  if (timeOfDay != null) {
-                    setState(() {
-                      String formattedTime = timeOfDay.format(context);
-                      widget.time.text = formattedTime;
-                    });
-                  } else {
-                    return showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Text(textConst.noDate),
-                        actions: [
-                          TextButton(
-                              onPressed: (() => Navigator.pop(context)),
-                              child: Text('Ok'))
-                        ],
-                      ),
-                    );
-                  }
-                },
+                onTap: pickTime,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                     fillColor: Colors.white,
@@ -86,5 +54,31 @@ class _CustomTimeState extends State<CustomTime> {
         ),
       ],
     );
+  }
+
+  pickTime() async {
+    TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.dial,
+    );
+
+    if (timeOfDay != null) {
+      setState(() {
+        String formattedTime = timeOfDay.format(context);
+        widget.time.text = formattedTime;
+      });
+    } else {
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text(textConst.noTime),
+          actions: [
+            TextButton(
+                onPressed: (() => Navigator.pop(context)), child: Text('Ok'))
+          ],
+        ),
+      );
+    }
   }
 }

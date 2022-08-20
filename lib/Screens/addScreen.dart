@@ -87,7 +87,7 @@ class _AddScreenState extends State<AddScreen> {
       ),
       backgroundColor: Color.fromARGB(255, 201, 204, 206),
       body: Padding(
-        padding: EdgeInsets.all(50),
+        padding: EdgeInsets.fromLTRB(40, 40, 40, 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -112,14 +112,10 @@ class _AddScreenState extends State<AddScreen> {
               w: .8,
             ),
             CustomDate(
-              ic: Icons.calendar_month,
-              f: () {},
               textFieldHint: textConst.date,
               cont: date,
             ),
             CustomTime(
-              ic: Icons.access_time,
-              f: () {},
               textFieldHint: textConst.time,
               time: time,
             ),
@@ -283,7 +279,7 @@ class _AddScreenState extends State<AddScreen> {
                       ),
                     ),
                     minimumSize: MaterialStateProperty.all(
-                      Size(120, 40),
+                      Size(130, 40),
                     ),
                     backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
